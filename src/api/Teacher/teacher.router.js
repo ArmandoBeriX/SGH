@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const TeacherController = require('./infrastructure/teacher.controller');
+const TeacherController = require('./infraestructure/teacher.controller');
 const TeacherService = require('./application/teacher.service');
 const TeacherRepository = require('./infrastructure/MongoTeacherRepository'); // O el repositorio que uses
 
