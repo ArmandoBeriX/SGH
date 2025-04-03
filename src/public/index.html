@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Profesores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 10px 0;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn.delete {
+            background: #f44336;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Profesores</h1>
+    <a href="/create-teacher.html" class="btn">Crear Profesor</a>
+    <table id="teachersTable">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Asignatura</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Datos cargados por JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/api/teachers');
+                if (!response.ok) throw new Error('Error al cargar profesores');
+                const teachers = await response.json();
+                const tbody = document.querySelector('#teachersTable tbody');
+
+                teachers.forEach(teacher => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${teacher.nombre}</td>
+                        <td>${teacher.asignatura}</td>
+                        <td class="actions">
+                            <a href="/view-teacher.html?id=${teacher.id}" class="btn">Ver</a>
+                            <a href="/edit-teacher.html?id=${teacher.id}" class="btn">Editar</a>
+                            <button onclick="deleteTeacher('${teacher.id}')" class="btn delete">Eliminar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        async function deleteTeacher(id) {
+            if (confirm('¿Eliminar este profesor?')) {
+                try {
+                    const response = await fetch(`/api/teachers/${id}`, { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Error al eliminar');
+                    window.location.reload();
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

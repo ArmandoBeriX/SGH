@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Profesor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .teacher-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        .detail-item strong {
+            color: #555;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .btn.back {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>Detalles del Profesor</h1>
+    <div id="teacherDetails" class="teacher-details">
+        <!-- Datos cargados por JavaScript -->
+    </div>
+    <a href="/index.html" class="btn back">Volver al listado</a>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const teacherId = urlParams.get('id');
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch(`/api/teachers/${teacherId}`);
+                if (!response.ok) throw new Error('Error al cargar profesor');
+                const teacher = await response.json();
+                document.getElementById('teacherDetails').innerHTML = `
+                    <div class="detail-item"><strong>ID:</strong> ${teacher.id}</div>
+                    <div class="detail-item"><strong>Nombre:</strong> ${teacher.nombre}</div>
+                    <div class="detail-item"><strong>Asignatura:</strong> ${teacher.asignatura}</div>
+                    <div class="detail-item"><strong>Fecha de creación:</strong> ${new Date(teacher.fechaCreacion).toLocaleString()}</div>
+                `;
+            } catch (error) {
+                alert(error.message);
+                window.location.href = '/index.html';
+            }
+        });
+    </script>
+</body>
+</html>
